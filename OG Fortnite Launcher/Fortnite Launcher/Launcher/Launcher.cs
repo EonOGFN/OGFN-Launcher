@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using static MainWindow;
-
 public class Launcher
 {
     public static async Task AddVersion()
@@ -28,8 +27,7 @@ public class Launcher
         Question("Enter the path to your Fortnite build: ");
         Version_Path = Console.ReadLine();
 
-        if (!Directory.Exists(Path.Combine(Version_Path, "FortniteGame")) ||
-            !Directory.Exists(Path.Combine(Version_Path, "Engine")))
+        if (!Directory.Exists(Path.Combine(Version_Path, "FortniteGame")) || !Directory.Exists(Path.Combine(Version_Path, "Engine")))
         {
             await Return("Please select the correct Fortnite path that contains 'FortniteGame' and 'Engine' folders.");
             return;
@@ -40,10 +38,7 @@ public class Launcher
 
         File.WriteAllLines(Credentials, Existing_Line);
 
-        Print("Version added/modified successfully.");
-        Print("Press any key to continue...");
-        Console.ReadKey();
-        Console.Clear();
+        Success("Version added/modified successfully.");
     }
 
     public static async Task Launch()
@@ -119,10 +114,7 @@ public class Launcher
 
             File.WriteAllLines(Credentials, Lines);
 
-            Print("Version removed successfully.");
-            Print("Press any key to continue...");
-            Console.ReadKey();
-            Console.Clear();
+            Success("Version removed successfully.");
         }
     }
 
@@ -157,10 +149,7 @@ public class Launcher
 
             File.WriteAllLines(Credentials, NewDetails);
 
-            Print("Account details modified successfully.");
-            Print("Press any key to continue...");
-            Console.ReadKey();
-            Console.Clear();
+            Success("Account details modified successfully.");
         }
         catch (Exception ex)
         {

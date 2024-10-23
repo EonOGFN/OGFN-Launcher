@@ -23,7 +23,8 @@ public class MainWindow
             Console.WriteLine("[2] Modify Account Details");
             Console.WriteLine($"[3] Launch {Project.Name}");
             Console.WriteLine("[4] Remove Fortnite Version");
-            Console.Write("[?] Please choose an option: ");
+
+            Console.Write("\n[?] Please choose an option: ");
 
             string Input = Console.ReadLine();
 
@@ -40,14 +41,23 @@ public class MainWindow
 
     public static async Task Return(string Message)
     {
-        AnsiConsole.MarkupLine($"[Red](!)[/] {Message} Returning in 5 Seconds..");
-        await Task.Delay(5000);
+        const int CloseTime = 5; // Adjust to your liking (Seconds)
+        AnsiConsole.MarkupLine($"[Red](!)[/] {Message} Returning in {CloseTime} Seconds..");
+        await Task.Delay(TimeSpan.FromSeconds(CloseTime));
         Console.Clear();
     }
 
     public static async Task Print(string Message)
     {
         AnsiConsole.MarkupLine($"[{Project.Color}](*)[/] {Message}");
+    }
+
+    public static async Task Success(string Message)
+    {
+        AnsiConsole.MarkupLine($"[{Project.Color}](*)[/] {Message}");
+        Print("Press any key to continue...");
+        Console.ReadKey();
+        Console.Clear();
     }
 
     public static async Task Question(string Message)
