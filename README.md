@@ -1,5 +1,5 @@
 ## OG Fortnite Launcher  
-This is a simple, free-to-use OG Fortnite Launcher that supports versions above **Chapter 1 Season 3**. 
+This is a simple, free-to-use OG Fortnite Launcher that supports versions above **Chapter 1 Season 3**.<br>
 It's highly reliable and up-to-date, with all the necessary checks to help you start your own project. You can customize everything to your project's liking in `Project.cs`.
 
 ### Redirect
