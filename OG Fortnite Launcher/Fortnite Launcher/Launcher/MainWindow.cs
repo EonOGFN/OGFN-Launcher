@@ -10,8 +10,9 @@ public class MainWindow
          string UserSettings = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), $"{Project.Name} Launcher");
          Credentials = Path.Combine(UserSettings, "Credentials.ini");
 
-        if (!Directory.Exists(UserSettings)){
-            Directory.CreateDirectory(UserSettings);
+        Directory.CreateDirectory(UserSettings);
+        if (!File.Exists(Credentials)){
+            File.Create(Credentials).Dispose();
         }
 
         while (true)
@@ -41,7 +42,7 @@ public class MainWindow
 
     public static async Task Return(string Message)
     {
-        const int CloseTime = 5; // Adjust to your liking (Seconds)
+        const int CloseTime = 5;
         AnsiConsole.MarkupLine($"[Red](!)[/] {Message} Returning in {CloseTime} Seconds..");
         await Task.Delay(TimeSpan.FromSeconds(CloseTime));
         Console.Clear();

@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Linq.Expressions;
 using static MainWindow;
 public class Launcher
 {
@@ -43,39 +45,52 @@ public class Launcher
 
     public static async Task Launch()
     {
-        var Lines = File.ReadAllLines(Credentials).ToList();
-
-        var Versions = Lines
-            .Where(Line => !Line.StartsWith("Email=") && !Line.StartsWith("Password="))
-            .Select(Line => Line.Split('=')[0])
-            .ToList();
-
-        Console.WriteLine("\nFortnite Builds:\n");
-
-        for (int i = 0; i < Versions.Count; i++)
+        try
         {
-            Console.WriteLine($"* [{i + 1}] {Versions[i]}");
-        }
+            var Lines = File.ReadAllLines(Credentials);
+            var Email = Lines.FirstOrDefault(Line => Line.StartsWith("Email="))?.Split('=')[1]?.Trim();
+            var Password = Lines.FirstOrDefault(Line => Line.StartsWith("Password="))?.Split('=')[1]?.Trim();
 
-        Console.WriteLine();
-        Question("Enter the number of the version to launch: ");
+            if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password)) {
+                await Return("Email and/or password missing. Please set your account credentials.");
+                return;
+            }
 
-        if (int.TryParse(Console.ReadLine(), out int Build) && Build > 0 && Build <= Versions.Count)
-        {
-            string GamePath = Lines.First(line => line.StartsWith(Versions[Build - 1] + "=")).Split('=')[1];
-            string Email = Lines.First(line => line.StartsWith("Email=")).Split('=')[1];
-            string Password = Lines.First(line => line.StartsWith("Password=")).Split('=')[1];
+            var Versions = Lines
+                .Where(Line => !Line.StartsWith("Email=") && !Line.StartsWith("Password="))
+                .Select(Line => Line.Split('=')[0])
+                .ToList();
 
-            Process FortniteLauncher = FNProc.Launch($"{GamePath}\\FortniteGame\\Binaries\\Win64\\FortniteLauncher.exe", true, "");
-            Process FortniteClientBE = FNProc.Launch($"{GamePath}\\FortniteGame\\Binaries\\Win64\\FortniteClient-Win64-Shipping_BE.exe", true, "");
-            Process FortniteClientEAC = FNProc.Launch($"{GamePath}\\FortniteGame\\Binaries\\Win64\\FortniteClient-Win64-Shipping_EAC.exe", true, "");
-            Process FortniteClient64 = FNProc.Launch($"{GamePath}\\FortniteGame\\Binaries\\Win64\\FortniteClient-Win64-Shipping.exe", false, $"-AUTH_LOGIN={Email} -AUTH_PASSWORD={Password} -nobe -fromfl=eac -fltoken=5d67b47b83ad5793a18a5746 -AUTH_TYPE=epic -epicapp=Fortnite -epicenv=Prod -epiclocale=en-us -epicportal -skippatchcheck -nobe -fromfl=eac -fltoken=5d67b47b83ad5793a18a5746");
+            if (!Versions.Any()) {
+                await Return("No Fortnite Builds are set. Please add a build to your configuration.");
+                return;
+            }
+
+            Console.WriteLine("\nFortnite Builds:\n");
+            for (int i = 0; i < Versions.Count; i++)
+                Console.WriteLine($"* [{i + 1}] {Versions[i]}");
+
+            Console.WriteLine();
+            Question("Enter the number of the version to launch: ");
+
+            if (int.TryParse(Console.ReadLine(), out int Build) && Build > 0 && Build <= Versions.Count)
+            {
+                string GamePath = Lines.First(line => line.StartsWith(Versions[Build - 1] + "=")).Split('=')[1];
+                Process FortniteLauncher = FNProc.Launch($"{GamePath}\\FortniteGame\\Binaries\\Win64\\FortniteLauncher.exe", true, "");
+                Process FortniteClientBE = FNProc.Launch($"{GamePath}\\FortniteGame\\Binaries\\Win64\\FortniteClient-Win64-Shipping_BE.exe", true, "");
+                Process FortniteClientEAC = FNProc.Launch($"{GamePath}\\FortniteGame\\Binaries\\Win64\\FortniteClient-Win64-Shipping_EAC.exe", true, "");
+                Process FortniteClient64 = FNProc.Launch($"{GamePath}\\FortniteGame\\Binaries\\Win64\\FortniteClient-Win64-Shipping.exe", false, $"-AUTH_LOGIN={Email} -AUTH_PASSWORD={Password} -nobe -fromfl=eac -fltoken=5d67b47b83ad5793a18a5746 -AUTH_TYPE=epic -epicapp=Fortnite -epicenv=Prod -epiclocale=en-us -epicportal -skippatchcheck -nobe -fromfl=eac -fltoken=5d67b47b83ad5793a18a5746");
+                Print($"{Project.Name} has been successfully launched.");
+                Thread.Sleep(Timeout.Infinite);
+            }
+
             Print($"{Project.Name} has been successfully launched.");
-            Thread.Sleep(Timeout.Infinite);
+                Thread.Sleep(Timeout.Infinite);
         }
-        else
+        catch (Exception Error)
         {
-            await Return("Invalid selection. Please try again.");
+            if (Error.Message.Contains("An error occurred trying to start process"))
+                await Return($"{Project.Name} Launcher supports only Chapter 1 Season 3 and above. If your build is compatible but still encountering issues, it may be corrupted, and you should consider reinstalling.");
         }
     }
 
