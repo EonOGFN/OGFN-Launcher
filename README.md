@@ -3,7 +3,7 @@ This is a simple, free-to-use OG Fortnite Launcher that supports versions above 
 It's highly reliable and up-to-date, with all the necessary checks to help you start your own project. You can customize everything to your project's liking in `Project.cs`.
 
 ### Redirect
-- You can use an open-source [Redirect/SSL](https://github.com/Milxnor/Cobalt) bypass by Milxnor to redirect to your own Fortnite server.
+- You can use an open-source [Redirect/SSL Bypass](https://github.com/Milxnor/Cobalt) by Milxnor to redirect to your own Fortnite server.
 
 ### Implementation Instructions:
 1. Navigate to `\Engine\Binaries\ThirdParty\NVIDIA\NVaftermath\Win64`.
