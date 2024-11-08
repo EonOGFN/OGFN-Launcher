@@ -20,12 +20,13 @@ public class MainWindow
             AnsiConsole.MarkupLine($"[{Project.Color}]{Project.MainScreen}[/]\n");
             Console.WriteLine("[*] Launcher made by Plague. Check it out at github.com/EonOGFN/OGFN-Launcher.\n");
 
-            Console.WriteLine("[1] Add Fortnite Version");
-            Console.WriteLine("[2] Modify Account Details");
-            Console.WriteLine($"[3] Launch {Project.Name}");
-            Console.WriteLine("[4] Remove Fortnite Version");
+            Console.WriteLine("[1] Add a New Fortnite Version");
+            Console.WriteLine("[2] Modify Account Information");
+            Console.WriteLine("[3] Start Fortnite Game");
+            Console.WriteLine("[4] Remove a Fortnite Version");
+            Console.WriteLine("[5] Configure Launcher Settings");
 
-            Console.Write("\n[?] Please choose an option: ");
+            Console.Write("\n[?] Please select an option: ");
 
             string Input = Console.ReadLine();
 
@@ -35,35 +36,36 @@ public class MainWindow
                 case "2": await ModifyAccountDetails(); break;
                 case "3": await Launch(); break;
                 case "4": await RemoveVersion(); break;
-                default: await Return(""); break;
+                case "5": await Options(); break;
+                default: Console.Clear(); break;
             }
         }
     }
 
-    public static async Task Return(string Message)
+    public static async Task Return(string Message, bool SkipLine)
     {
         const int CloseTime = 5;
-        AnsiConsole.MarkupLine($"[Red](!)[/] {Message} Returning in {CloseTime} Seconds..");
+        AnsiConsole.MarkupLine($"{(SkipLine ? "\n" : "")}[Red](!)[/] {Message} Returning in {CloseTime} Seconds...");
         await Task.Delay(TimeSpan.FromSeconds(CloseTime));
         Console.Clear();
     }
 
-    public static async Task Print(string Message)
+    public static async Task Print(string Message, bool SkipLine)
     {
-        AnsiConsole.MarkupLine($"[{Project.Color}](*)[/] {Message}");
+        AnsiConsole.MarkupLine($"{(SkipLine ? "\n" : "")}[{Project.Color}](*)[/] {Message}");
     }
 
-    public static async Task Success(string Message)
+    public static async Task Success(string Message, bool SkipLine)
     {
-        AnsiConsole.MarkupLine($"[{Project.Color}](*)[/] {Message}");
-        Print("Press any key to continue...");
+        AnsiConsole.MarkupLine($"{(SkipLine ? "\n" : "")}[{Project.Color}](*)[/] {Message}");
+        Print("Press any key to continue...", false);
         Console.ReadKey();
         Console.Clear();
     }
 
-    public static async Task Question(string Message)
+    public static async Task Question(string Message, bool SkipLine)
     {
-        String Color = "[rgb(184,134,11)]"; 
-        AnsiConsole.Markup($"{Color}(?)[/] {Message}");
+        string color = "[rgb(184,134,11)]";
+        AnsiConsole.Markup($"{(SkipLine ? "\n" : "")}{color}(?)[/] {Message}");
     }
 }
