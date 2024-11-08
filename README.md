@@ -9,4 +9,4 @@ It's highly reliable and up-to-date, with all the necessary checks to help you s
 1. Navigate to `\Engine\Binaries\ThirdParty\NVIDIA\NVaftermath\Win64`.
 2. After building Cobalt, rename the generated file to `GFSDK_Aftermath_Lib.x64.dll` and place it in the Win64 folder.
 
-![image](https://github.com/user-attachments/assets/49e4b3ac-f815-4af7-ba8e-5b9c0dd2529d)
+![image](https://github.com/user-attachments/assets/3ca15ab3-5d28-4228-bf53-4c5aed678e93)
