@@ -1,11 +1,12 @@
 ﻿using System.Diagnostics;
 using static MainWindow;
 using static Values;
-public class Launcher
+using static UI;
+public class Manager
 {
-    public static async Task AddVersion()
-    {
-        Console.Clear();
+    public static async Task AddVersion() {
+    Console.Clear();
+
         Question("Enter a name to identify the Fortnite Build: ", false);
         string Version_Name = Console.ReadLine();
         string Version_Path;
@@ -99,6 +100,8 @@ public class Launcher
                     Thread.Sleep(30000);
                     Environment.Exit(0);
             }
+
+            Console.Clear();
         }
         catch (Exception Error)
         {
@@ -107,9 +110,9 @@ public class Launcher
         }
     }
 
-    public static async Task RemoveVersion()
-    {
-        Console.Clear();
+    public static async Task RemoveVersion() {
+    Console.Clear();
+
         var Lines = File.ReadAllLines(Credentials).ToList();
 
         var Configuration = File.Exists(Credentials) ? File.ReadAllLines(Credentials).ToList() : new List<string>();
@@ -138,84 +141,71 @@ public class Launcher
 
             Success("Version removed successfully.", true);
         }
+
+        Console.Clear();
     }
 
-    public static async Task ModifyAccountDetails()
-    {
-    Retry:
+    public static async Task ModifyAccountDetails() {
+    Retry: Console.Clear();
 
-        try
+        Print("Enter your Email: ", false);
+        string AUTH_LOGIN = Console.ReadLine();
+
+        Print("Enter your Password: ", false);
+        string AUTH_PASSWORD = Console.ReadLine();
+
+        Question("Are you sure these are your correct details? (Yes/No) ", false);
+        string Answer = Console.ReadLine();
+
+        if (Answer.ToLower() == "no")
         {
-            Console.Clear();
-            Print("Enter your Email: ", false);
-            string AUTH_LOGIN = Console.ReadLine();
-
-            Print("Enter your Password: ", false);
-            string AUTH_PASSWORD = Console.ReadLine();
-
-            Question("Are you sure these are your correct details? (Yes/No) ", false);
-            string Answer = Console.ReadLine();
-
-            if (Answer.ToLower() == "no")
-            {
-                await Return("Please re-enter your credentials correctly.", false);
-                goto Retry;
-            }
-            var NewDetails = File.Exists(Credentials) ? File.ReadAllLines(Credentials).ToList() : new List<string>();
-
-            NewDetails.RemoveAll(Line => Line.StartsWith("Email="));
-            NewDetails.RemoveAll(Line => Line.StartsWith("Password="));
-
-            NewDetails.Add($"Email={AUTH_LOGIN}");
-            NewDetails.Add($"Password={AUTH_PASSWORD}");
-
-            File.WriteAllLines(Credentials, NewDetails);
-
-            Success("Account details modified successfully.", true);
+            await Return("Please re-enter your credentials correctly.", false);
+            goto Retry;
         }
-        catch (Exception ex)
-        {
-            Print($"Whoops! Something went wrong. We've encountered an issue on our end. Please try reopening the {Project.Name} Launcher.", true);
-        }
+        var NewDetails = File.Exists(Credentials) ? File.ReadAllLines(Credentials).ToList() : new List<string>();
+
+        NewDetails.RemoveAll(Line => Line.StartsWith("Email="));
+        NewDetails.RemoveAll(Line => Line.StartsWith("Password="));
+
+        NewDetails.Add($"Email={AUTH_LOGIN}");
+        NewDetails.Add($"Password={AUTH_PASSWORD}");
+
+        File.WriteAllLines(Credentials, NewDetails);
+
+        Success("Account details modified successfully.", true);
     }
 
-    public static async Task Options()
-    {
-    Retry:
-        try
+    public static async Task Options() {
+    Retry: Console.Clear();
+
+        var Configuration = File.Exists(Credentials) ? File.ReadAllLines(Credentials).ToList() : new List<string> 
+        { 
+            "LaunchMultipleGames=false", 
+            "CloseAfterLaunch=false" 
+        };
+
+        bool Config_1 = GetBool(Configuration, "LaunchMultipleGames");
+        bool Config_2 = GetBool(Configuration, "CloseAfterLaunch");
+
+        Console.Write("[1] Launch Multiple Games: ");
+        Status(Config_1);
+
+        Console.Write("[2] Close after Launching Fortnite: ");
+        Status(Config_2);
+
+        Console.Write("[3] Exit to Main Menu\n\n");
+
+        Question("Select an option to toggle: ", false);
+
+        switch (Console.ReadLine())
         {
-            Console.Clear();
-
-            var Configuration = File.Exists(Credentials) ? File.ReadAllLines(Credentials).ToList() : new List<string> 
-            { 
-                "LaunchMultipleGames=false", 
-                "CloseAfterLaunch=false" 
-            };
-
-            bool Config_1 = GetBool(Configuration, "LaunchMultipleGames");
-            bool Config_2 = GetBool(Configuration, "CloseAfterLaunch");
-
-            Console.Write("[1] Launch Multiple Games: ");
-            Status(Config_1);
-
-            Console.Write("[2] Close after Launching Fortnite: ");
-            Status(Config_2);
-
-            Question("Select an option to toggle: ", false);
-
-            switch (Console.ReadLine())
-            {
-                case "1": Config_1 = !Config_1; UpdateSetting(Configuration, "LaunchMultipleGames", Config_1); break;
-                case "2": Config_2 = !Config_2; UpdateSetting(Configuration, "CloseAfterLaunch", Config_2); break;
-                default: goto Retry;
-            }
-
-            File.WriteAllLines(Credentials, Configuration);
-            Success("Option updated successfully.", true);
+            case "1": Config_1 = !Config_1; UpdateSetting(Configuration, "LaunchMultipleGames", Config_1); break;
+            case "2": Config_2 = !Config_2; UpdateSetting(Configuration, "CloseAfterLaunch", Config_2); break;
+            case "3": Console.Clear(); return;
+            default: goto Retry;
         }
-        catch (Exception ex)
-        {
-            await Return($"Whoops! Something went wrong. We've encountered an issue on our end. Please try reopening the {Project.Name} Launcher.", true);
-        }
+
+        File.WriteAllLines(Credentials, Configuration);
+        Success("Option updated successfully.", true);
     }
 }

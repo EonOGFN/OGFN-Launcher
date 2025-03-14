@@ -37,7 +37,6 @@ public static class ConfigHelper
         "Password", "Email",
     };
 }
-
 public class Values
 {
     public static string GetString(List<string> Settings, string Attribute)
